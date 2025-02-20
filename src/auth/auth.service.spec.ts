@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { access } from 'fs';
+import { Module } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -24,11 +25,11 @@ describe('AuthService', () => {
   };
 
   const mockJwtService = {
-    sign: jest.fn().mockReturnValue('mocked-jwt-token'), //jest.fn() → Jest’in bir mock fonksiyon oluşturmasını sağlar. 
-    //mockReturnValue('mocked-jwt-token') → Bu fonksiyon her çağrıldığında 'mocked-jwt-token' değerini döndürür.
+    sign: jest.fn().mockReturnValue('mocked-jwt-token'), //jest.fn() → Jest’in bir mock jwt service için (sahte) fonksiyon oluşturuyoruz ve token için mocked-jwt-token i döndürüyoruz. 
+    //mockReturnValue('mocked-jwt-token') → Bu fonksiyon her çağrıldığında 'mocked-jwt-token' değerini döndürecek aşşağıda login methodunda kullandık
   };
 
-  beforeEach(async () => {
+  beforeEach(async () => { //test modülü temsillerin bağımlılıklarını yazıyoruz jest test i kullanmadan önce yazmamız gerek
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService, //Test etmek istediğimiz asıl servis.
@@ -59,6 +60,8 @@ describe('AuthService', () => {
       //Şifre doğru olduğunda dönen kullanıcı nesnesinde password olmamalıdır.
     });
   });
+  
+
   describe('Login', () =>{ //Login methodunu çağırıyoruz test grubu içerisinde 
     it('erişim tokeni dönmesi gerek', async() =>{ 
       const result = await authService.login(mockUser); //uydurulmuş user nesnesini çağırdık
